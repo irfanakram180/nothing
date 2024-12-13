@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cyber Attack Warning</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background: linear-gradient(45deg, #000, #8b0000);
+      background-size: 400% 400%;
+      animation: backgroundPulse 3s infinite;
+      color: #00ff00;
+      overflow: hidden;
+    }
+    #message {
+      font-size: 1.5em;
+      text-align: center;
+      display: none;
+      animation: fadeIn 1s ease-in-out;
+    }
+    .warning {
+      color: red;
+      font-weight: bold;
+      animation: glitch 0.5s infinite;
+    }
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+    @keyframes backgroundPulse {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+ 
+  </style>
+</head>
+<body>
+  <div id="message"></div>
+
+  <audio id="alertSound" src="https://www.soundjay.com/button/beep-07.wav" preload="auto"></audio>
+
+  <script>
+    const messageDiv = document.getElementById('message');
+    const alertSound = document.getElementById('alertSound');
+
+    // Helper function to fetch IP address
+    async function fetchIPAddress() {
+      try {
+        const response = await fetch('https://api.ipify.org?format=json');
+        const data = await response.json();
+        return data.ip;
+      } catch (error) {
+        return "Unable to fetch IP";
+      }
+    }
+
+    // Step 1: Blank page, then show "Location fetching..."
+    setTimeout(async () => {
+      messageDiv.textContent = "Fetching location...";
+      messageDiv.style.display = "block";
+
+      // Step 2: Fetch location from localStorage or use default
+      let location = localStorage.getItem('location');
+      if (!location) {
+        location = "Lat: 25.276987, Long: 55.296249 (Default)"; // Default location
+        localStorage.setItem('location', location);
+      }
+
+      const ipAddress = await fetchIPAddress();
+
+      setTimeout(() => {
+        messageDiv.textContent = `Location fetched: ${location}\nIP Address: ${ipAddress}`;
+
+        // Step 3: Show cyber attack warning with fade effect
+        setTimeout(() => {
+          messageDiv.innerHTML = "<span class='warning'>WARNING: Cyber attack detected! <br> Your phone has been hacked! <br> All your activities are being monitored!</span>";
+          messageDiv.style.animation = "fadeIn 1s ease-in-out";
+          alertSound.play();
+        }, 2000);
+      }, 2000);
+    }, 3000);
+  </script>
+</body>
+</html>
